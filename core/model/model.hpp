@@ -21,8 +21,7 @@
 
 unsigned int TextureFromFile(const char *path, const std::string &directory, bool gamma = false);
 
-class Model {
-   public:
+struct Model {
     // model data
     std::vector<Texture> textures_loaded;  // stores all the textures loaded so far, optimization to make sure textures aren't loaded more than once.
     std::vector<Mesh> meshes;
@@ -40,7 +39,6 @@ class Model {
             meshes[i].Draw(shader);
     }
 
-   private:
     // loads a model with supported ASSIMP extensions from file and stores the resulting meshes in the meshes vector.
     void loadModel(std::string const &path) {
         // read file via ASSIMP

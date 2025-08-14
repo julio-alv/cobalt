@@ -23,28 +23,26 @@ struct Vertex {
 };
 
 struct Texture {
-    unsigned int id;
+    uint32_t id;
     std::string type;
     std::string path;
 };
 
-class Mesh {
-   public:
+struct Mesh {
     // mesh Data
     std::vector<Vertex> vertices;
-    std::vector<unsigned int> indices;
+    std::vector<uint32_t> indices;
     std::vector<Texture> textures;
-    unsigned int VAO;
+    uint32_t VAO;
 
     // constructor
-    Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<Texture> textures);
+    Mesh(std::vector<Vertex> vertices, std::vector<uint32_t> indices, std::vector<Texture> textures);
 
     // render the mesh
     void Draw(Shader &shader);
 
-   private:
     // render data
-    unsigned int VBO, EBO;
+    uint32_t VBO, EBO;
 
     // initializes all the buffer objects/arrays
     void setupMesh();

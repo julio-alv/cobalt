@@ -28,8 +28,8 @@ void framebuffer_size_callback(GLFWwindow *window, int32_t width, int32_t height
 void process_input(GLFWwindow *window);
 void mouse_callback(GLFWwindow *window, double xposIn, double yposIn);
 void scroll_callback(GLFWwindow *window, double xoffset, double yoffset);
-unsigned int loadTexture(const char *path);
-unsigned int loadCubemap(std::vector<std::string> faces);
+uint32_t loadTexture(const char *path);
+uint32_t loadCubemap(std::vector<std::string> faces);
 
 int main() {
     glfwInit();
@@ -37,7 +37,9 @@ int main() {
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
     glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, true);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+#ifdef __APPLE__
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+#endif
 
     GLFWwindow *window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "LearnOpenGL", nullptr, nullptr);
     if (window == nullptr) {
@@ -63,7 +65,7 @@ int main() {
 
     // load textures
     // -------------
-    // unsigned int cubeTexture = loadTexture("../textures/container.jpg");
+    // uint32_t cubeTexture = loadTexture("../textures/container.jpg");
 
     std::vector<std::string> faces{
         "../textures/skybox/right.jpg",
@@ -72,7 +74,7 @@ int main() {
         "../textures/skybox/bottom.jpg",
         "../textures/skybox/front.jpg",
         "../textures/skybox/back.jpg"};
-    unsigned int cubemapTexture = loadCubemap(faces);
+    uint32_t cubemapTexture = loadCubemap(faces);
 
     // shader configuration
     // --------------------
@@ -130,7 +132,7 @@ int main() {
         1.0f, -1.0f, 1.0f};
 
     // skybox VAO
-    unsigned int skyboxVAO, skyboxVBO;
+    uint32_t skyboxVAO, skyboxVBO;
     glGenVertexArrays(1, &skyboxVAO);
     glGenBuffers(1, &skyboxVBO);
     glBindVertexArray(skyboxVAO);
@@ -188,7 +190,7 @@ int main() {
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
-
+    glDeleteTextures(1, &cubemapTexture);
     glfwTerminate();
     return 0;
 }
@@ -242,8 +244,8 @@ void scroll_callback(GLFWwindow *window, double xoffset, double yoffset) {
 
 // utility function for loading a 2D texture from file
 // ---------------------------------------------------
-unsigned int loadTexture(char const *path) {
-    unsigned int textureID;
+uint32_t loadTexture(char const *path) {
+    uint32_t textureID;
     glGenTextures(1, &textureID);
 
     int width, height, nrComponents;
@@ -284,14 +286,14 @@ unsigned int loadTexture(char const *path) {
 // +Z (front)
 // -Z (back)
 // -------------------------------------------------------
-unsigned int loadCubemap(std::vector<std::string> faces) {
-    unsigned int textureID;
+uint32_t loadCubemap(std::vector<std::string> faces) {
+    uint32_t textureID;
     glGenTextures(1, &textureID);
     glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
 
     int width, height, nrChannels;
-    for (unsigned int i = 0; i < faces.size(); i++) {
-        unsigned char *data = stbi_load(faces[i].c_str(), &width, &height, &nrChannels, 0);
+    for (uint32_t i = 0; i < faces.size(); i++) {
+        uint8_t *data = stbi_load(faces[i].c_str(), &width, &height, &nrChannels, 0);
         if (data) {
             glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
             stbi_image_free(data);
