@@ -17,10 +17,10 @@ add_executable(${PROJECT_NAME} main.cpp)
 
 target_link_libraries(${PROJECT_NAME}
     PRIVATE
-        core
         glad
         glfw
         glm::glm
         assimp::assimp
         stb
+        core
 )

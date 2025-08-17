@@ -9,7 +9,9 @@ add_library(core
     model/model.cpp
 
     camera/camera.hpp
+    camera/camera.cpp
 )
+
 target_include_directories(core PUBLIC shader/)
 target_include_directories(core PUBLIC mesh/)
 target_include_directories(core PUBLIC model/)
@@ -21,6 +23,7 @@ target_include_directories(core
         ${CMAKE_SOURCE_DIR}/vendor/glad
         ${CMAKE_SOURCE_DIR}/vendor/glm
         ${CMAKE_SOURCE_DIR}/vendor/stb_image
+        ${CMAKE_SOURCE_DIR}/vendor/assimp
 )
 
 target_link_libraries(core
@@ -28,4 +31,5 @@ target_link_libraries(core
         stb
         glad
         glm::glm
+        assimp::assimp
 )
