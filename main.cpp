@@ -7,6 +7,7 @@
 #include <shader.hpp>
 #include <model.hpp>
 #include <camera.hpp>
+#include <entt/entt.hpp>
 
 // settings
 const uint32_t SCR_WIDTH = 1280;
@@ -73,7 +74,7 @@ void process_input(GLFWwindow *window);
 void mouse_callback(GLFWwindow *window, double xposIn, double yposIn);
 void scroll_callback(GLFWwindow *window, double xoffset, double yoffset);
 uint32_t loadTexture(const char *path);
-uint32_t loadCubemap(std::vector<std::string> faces);
+uint32_t loadCubemap(const std::vector<const char *> &faces);
 
 int main() {
     glfwInit();
@@ -101,13 +102,11 @@ int main() {
         std::printf("Failed to initialize GLAD");
         return -1;
     }
-    glEnable(GL_DEPTH_TEST);
-    glEnable(GL_CULL_FACE);
 
     Shader basic("../shaders/phong.vert", "../shaders/phong.frag");
     Shader skyboxShader("../shaders/skybox.vert", "../shaders/skybox.frag");
 
-    std::vector<std::string> faces{
+    std::vector<const char *> faces{
         "../textures/skybox/right.jpg",
         "../textures/skybox/left.jpg",
         "../textures/skybox/top.jpg",
@@ -136,6 +135,9 @@ int main() {
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *)0);
 
+    glEnable(GL_DEPTH_TEST);
+    glEnable(GL_CULL_FACE);
+
     while (!glfwWindowShouldClose(window)) {
         float currentFrame = static_cast<float>(glfwGetTime());
         deltaTime = currentFrame - lastFrame;
@@ -143,16 +145,16 @@ int main() {
 
         process_input(window);
 
-        glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+        glClearColor(0.0f, 0.5f, 0.5f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         basic.use();
-        basic.setVec3("dirLight.direction", -1.0f, -1.0f, -1.0f);
-        basic.setVec3("dirLight.ambient", 0.05f, 0.05f, 0.05f);
-        basic.setVec3("dirLight.diffuse", 0.7f, 0.7f, 0.7f);
-        basic.setVec3("dirLight.specular", 0.5f, 0.5f, 0.5f);
+        // basic.setVec3("dirLight.direction", -1.0f, -1.0f, -1.0f);
+        // basic.setVec3("dirLight.ambient", 0.05f, 0.05f, 0.05f);
+        // basic.setVec3("dirLight.diffuse", 0.7f, 0.7f, 0.7f);
+        // basic.setVec3("dirLight.specular", 0.5f, 0.5f, 0.5f);
 
-        basic.setFloat("material.shininess", 32.0f);
+        // basic.setFloat("material.shininess", 32.0f);
 
         // view/projection transformations
         glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
@@ -281,14 +283,14 @@ uint32_t loadTexture(char const *path) {
 // +Z (front)
 // -Z (back)
 // -------------------------------------------------------
-uint32_t loadCubemap(std::vector<std::string> faces) {
+uint32_t loadCubemap(const std::vector<const char *> &faces) {
     uint32_t textureID;
     glGenTextures(1, &textureID);
     glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
 
     int width, height, nrChannels;
     for (uint32_t i = 0; i < faces.size(); i++) {
-        uint8_t *data = stbi_load(faces[i].c_str(), &width, &height, &nrChannels, 0);
+        uint8_t *data = stbi_load(faces[i], &width, &height, &nrChannels, 0);
         if (data) {
             glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
             stbi_image_free(data);
