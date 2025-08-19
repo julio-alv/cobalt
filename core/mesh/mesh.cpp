@@ -1,6 +1,8 @@
 #include "mesh.hpp"
 
-Mesh::Mesh(std::vector<Vertex> vertices, std::vector<uint32_t> indices, std::vector<Texture> textures) {
+Mesh::Mesh(std::vector<Vertex> vertices,
+           std::vector<uint32_t> indices,
+           std::vector<Texture> textures) {
     _vertices = vertices;
     _indices = indices;
     _textures = textures;
@@ -36,7 +38,7 @@ void Mesh::Draw(Shader &shader) {
 
     // draw mesh
     glBindVertexArray(VAO);
-    glDrawElements(GL_TRIANGLES, static_cast<unsigned int>(_indices.size()), GL_UNSIGNED_INT, 0);
+    glDrawElements(GL_TRIANGLES, static_cast<uint32_t>(_indices.size()), GL_UNSIGNED_INT, 0);
     glBindVertexArray(0);
 
     // always good practice to set everything back to defaults once configured.

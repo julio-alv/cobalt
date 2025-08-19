@@ -16,9 +16,6 @@
 #include <mesh.hpp>
 #include <shader.hpp>
 
-// uint32_t TextureFromFile(const char *path, const std::string &directory, bool gamma = false);
-Texture loadTextureFromImage(const tinygltf::Image &image, const std::string &typeName);
-
 struct Model {
     // model data
     std::vector<Texture> textures_loaded;  // stores all the textures loaded so far, optimization to make sure textures aren't loaded more than once.
@@ -34,12 +31,9 @@ struct Model {
     // loads a model with tiny_gltf from file and stores the resulting meshes in the meshes vector.
     void loadModel(std::string const &path);
 
-    // processes a node in a recursive fashion. Processes each individual mesh located at the node and repeats this process on its children nodes (if any).
-    void processNode(const tinygltf::Model &model);
-
     Mesh processMesh(const tinygltf::Model &model, const tinygltf::Mesh &mesh);
 
     // checks all material textures of a given type and loads the textures if they're not loaded yet.
     // the required info is returned as a Texture struct.
-    // std::vector<Texture> loadMaterialTextures(aiMaterial *mat, aiTextureType type, std::string typeName);
+    // std::vector<Texture> loadMaterialTextures(const tinygltf::Material &material, const tinygltf::Model &model, std::string typeName);
 };
