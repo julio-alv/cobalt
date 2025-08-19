@@ -53,6 +53,10 @@
         "charconv": "cpp",
         "forward_list": "cpp",
         "type_traits": "cpp",
-        "cstddef": "cpp"
+        "cstddef": "cpp",
+        "map": "cpp",
+        "span": "cpp",
+        "regex": "cpp",
+        "__config": "cpp"
     }
 }

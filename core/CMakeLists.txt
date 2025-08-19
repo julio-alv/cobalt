@@ -23,7 +23,7 @@ target_include_directories(core
         ${CMAKE_SOURCE_DIR}/vendor/glad
         ${CMAKE_SOURCE_DIR}/vendor/glm
         ${CMAKE_SOURCE_DIR}/vendor/stb_image
-        ${CMAKE_SOURCE_DIR}/vendor/assimp
+        ${CMAKE_SOURCE_DIR}/vendor/tinygltf
 )
 
 target_link_libraries(core
@@ -31,5 +31,5 @@ target_link_libraries(core
         stb
         glad
         glm::glm
-        assimp::assimp
+        tinygltf
 )

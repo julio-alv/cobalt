@@ -123,7 +123,7 @@ int main() {
     skyboxShader.use();
     skyboxShader.setInt("skybox", 0);
 
-    Model ourModel("../objects/backpack/backpack.obj");
+    Model ourModel("../objects/backpack/backpack.gltf");
 
     // skybox VAO
     uint32_t skyboxVAO, skyboxVBO;
