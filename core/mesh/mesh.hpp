@@ -16,19 +16,13 @@ struct Vertex {
     glm::vec2 TexCoords;
 };
 
-struct Texture {
-    uint32_t id;
-    std::string type;
-    std::string path;
-};
-
 struct Mesh {
     std::vector<Vertex> _vertices;
     std::vector<uint32_t> _indices;
-    std::vector<Texture> _textures;
+    std::vector<uint32_t> _textures;
     uint32_t VAO, VBO, EBO;
 
-    Mesh(std::vector<Vertex> vertices, std::vector<uint32_t> indices, std::vector<Texture> textures);
+    Mesh(std::vector<Vertex> vertices, std::vector<uint32_t> indices, std::vector<uint32_t> textures);
 
     void Draw(Shader &shader);
 

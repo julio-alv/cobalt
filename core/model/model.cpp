@@ -25,7 +25,7 @@ Mesh Model::processMesh(const tinygltf::Model &model, const tinygltf::Mesh &mesh
     // data to fill
     std::vector<Vertex> vertices;
     std::vector<uint32_t> indices;
-    std::vector<Texture> textures;
+    std::vector<uint32_t> textures;
 
     size_t vertexCount;
     const float *positions;
@@ -132,15 +132,9 @@ Mesh Model::processMesh(const tinygltf::Model &model, const tinygltf::Mesh &mesh
                 norm = textures_loaded.at(normal_id);
             }
 
-            Texture tex1;
-            Texture tex2;
-            Texture tex3;
-            tex1.id = diff;
-            tex2.id = spec;
-            tex3.id = norm;
-            textures.push_back(tex1);
-            textures.push_back(tex2);
-            textures.push_back(tex3);
+            textures.push_back(diff);
+            textures.push_back(spec);
+            textures.push_back(norm);
         }
     }
 

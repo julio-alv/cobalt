@@ -2,7 +2,7 @@
 
 Mesh::Mesh(std::vector<Vertex> vertices,
            std::vector<uint32_t> indices,
-           std::vector<Texture> textures) {
+           std::vector<uint32_t> textures) {
     _vertices = vertices;
     _indices = indices;
     _textures = textures;
@@ -19,21 +19,21 @@ void Mesh::Draw(Shader &shader) {
     for (uint32_t i = 0; i < _textures.size(); i++) {
         glActiveTexture(GL_TEXTURE0 + i);  // active proper texture unit before binding
         // retrieve texture number (the N in diffuse_textureN)
-        std::string number;
-        std::string name = _textures[i].type;
-        if (name == "texture_diffuse")
-            number = std::to_string(diffuseNr++);
-        else if (name == "texture_specular")
-            number = std::to_string(specularNr++);  // transfer uint32_t to std::string
-        else if (name == "texture_normal")
-            number = std::to_string(normalNr++);  // transfer uint32_t to std::string
-        else if (name == "texture_height")
-            number = std::to_string(heightNr++);  // transfer uint32_t to std::string
+        // std::string number;
+        // std::string name = _textures[i].type;
+        // if (name == "texture_diffuse")
+        //     number = std::to_string(diffuseNr++);
+        // else if (name == "texture_specular")
+        //     number = std::to_string(specularNr++);  // transfer uint32_t to std::string
+        // else if (name == "texture_normal")
+        //     number = std::to_string(normalNr++);  // transfer uint32_t to std::string
+        // else if (name == "texture_height")
+        //     number = std::to_string(heightNr++);  // transfer uint32_t to std::string
 
         // now set the sampler to the correct texture unit
         // glUniform1i(glGetUniformLocation(shader.id, (name + number).c_str()), i);
         // and finally bind the texture
-        glBindTexture(GL_TEXTURE_2D, _textures[i].id);
+        glBindTexture(GL_TEXTURE_2D, _textures[i]);
     }
 
     // draw mesh
