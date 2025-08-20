@@ -86,6 +86,62 @@ Mesh Model::processMesh(const tinygltf::Model &model, const tinygltf::Mesh &mesh
                 indices.push_back(index);
             }
         }
+        {
+            if (model.textures.size() == 0) {
+                continue;
+            }
+            const auto &mat = model.materials[0];
+            int32_t diffuse_index = mat.pbrMetallicRoughness.baseColorTexture.index;
+            int32_t specular_index = mat.pbrMetallicRoughness.metallicRoughnessTexture.index;
+            int32_t normal_index = mat.normalTexture.index;
+
+            const tinygltf::Texture &diffuse_texture = model.textures[diffuse_index];
+            const tinygltf::Texture &specular_texture = model.textures[specular_index];
+            const tinygltf::Texture &normal_texture = model.textures[normal_index];
+
+            int32_t diffuse_id = diffuse_texture.source;
+            int32_t specular_id = specular_texture.source;
+            int32_t normal_id = normal_texture.source;
+
+            const tinygltf::Image &diffuse = model.images[diffuse_id];
+            const tinygltf::Image &specular = model.images[specular_id];
+            const tinygltf::Image &normal = model.images[normal_id];
+
+            uint32_t diff;
+            uint32_t spec;
+            uint32_t norm;
+
+            if (!textures_loaded.contains(diffuse_id)) {
+                diff = generateTexture(diffuse);
+                textures_loaded.insert({diffuse_id, diff});
+            } else {
+                diff = textures_loaded.at(diffuse_id);
+            }
+
+            if (!textures_loaded.contains(specular_id)) {
+                spec = generateTexture(specular);
+                textures_loaded.insert({specular_id, diff});
+            } else {
+                spec = textures_loaded.at(specular_id);
+            }
+
+            if (!textures_loaded.contains(normal_id)) {
+                norm = generateTexture(normal);
+                textures_loaded.insert({normal_id, diff});
+            } else {
+                norm = textures_loaded.at(normal_id);
+            }
+
+            Texture tex1;
+            Texture tex2;
+            Texture tex3;
+            tex1.id = diff;
+            tex2.id = spec;
+            tex3.id = norm;
+            textures.push_back(tex1);
+            textures.push_back(tex2);
+            textures.push_back(tex3);
+        }
     }
 
     vertices.reserve(vertexCount);
@@ -106,4 +162,28 @@ Mesh Model::processMesh(const tinygltf::Model &model, const tinygltf::Mesh &mesh
     }
 
     return Mesh(vertices, indices, textures);
+}
+
+uint32_t generateTexture(const tinygltf::Image &image) {
+    uint32_t id;
+    glGenTextures(1, &id);
+
+    uint32_t format;
+    if (image.component == 1)
+        format = GL_RED;
+    else if (image.component == 3)
+        format = GL_RGB;
+    else if (image.component == 4)
+        format = GL_RGBA;
+
+    glBindTexture(GL_TEXTURE_2D, id);
+    glTexImage2D(GL_TEXTURE_2D, 0, format, image.width, image.height, 0, format, GL_UNSIGNED_BYTE, image.image.data());
+    glGenerateMipmap(GL_TEXTURE_2D);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+    return id;
 }

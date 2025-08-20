@@ -118,7 +118,6 @@ int main() {
     // shader configuration
     // --------------------
     basic.use();
-    basic.setInt("texture1", 0);
 
     skyboxShader.use();
     skyboxShader.setInt("skybox", 0);
@@ -149,12 +148,12 @@ int main() {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         basic.use();
-        // basic.setVec3("dirLight.direction", -1.0f, -1.0f, -1.0f);
-        // basic.setVec3("dirLight.ambient", 0.05f, 0.05f, 0.05f);
-        // basic.setVec3("dirLight.diffuse", 0.7f, 0.7f, 0.7f);
-        // basic.setVec3("dirLight.specular", 0.5f, 0.5f, 0.5f);
+        basic.setVec3("dirLight.direction", -1.0f, -1.0f, -1.0f);
+        basic.setVec3("dirLight.ambient", 0.05f, 0.05f, 0.05f);
+        basic.setVec3("dirLight.diffuse", 0.7f, 0.7f, 0.7f);
+        basic.setVec3("dirLight.specular", 0.5f, 0.5f, 0.5f);
 
-        // basic.setFloat("material.shininess", 32.0f);
+        basic.setFloat("material.shininess", 32.0f);
 
         // view/projection transformations
         glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
@@ -165,8 +164,6 @@ int main() {
 
         // render the loaded model
         glm::mat4 model = glm::mat4(1.0f);
-        model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));  // translate it down so it's at the center of the scene
-        model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));      // it's a bit too big for our scene, so scale it down
         basic.setMat4("model", model);
         ourModel.Draw(basic);
 

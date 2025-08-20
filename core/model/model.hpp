@@ -11,24 +11,23 @@
 #include <fstream>
 #include <sstream>
 #include <iostream>
-#include <map>
+#include <set>
 #include <vector>
 #include <mesh.hpp>
 #include <shader.hpp>
 
+uint32_t generateTexture(const tinygltf::Image &image);
+
 struct Model {
     // model data
-    std::vector<Texture> textures_loaded;  // stores all the textures loaded so far, optimization to make sure textures aren't loaded more than once.
+    std::unordered_map<int32_t, uint32_t> textures_loaded;  // stores all the textures loaded so far, optimization to make sure textures aren't loaded more than once.
     std::vector<Mesh> meshes;
     // std::string directory;
 
-    // constructor, expects a filepath to a 3D model.
     Model(std::string const &path);
 
-    // draws the model, and thus all its meshes
     void Draw(Shader &shader);
 
-    // loads a model with tiny_gltf from file and stores the resulting meshes in the meshes vector.
     void loadModel(std::string const &path);
 
     Mesh processMesh(const tinygltf::Model &model, const tinygltf::Mesh &mesh);
