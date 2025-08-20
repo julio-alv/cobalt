@@ -2,6 +2,14 @@
 
 A simple rendering engine, derived from the tutorials at learnopengl.com
 
+## Cloning the repo
+
+This repo makes use of git submodules, use this command to properly download all the dependencies:
+
+```sh
+git clone --recurse-submodules <this repo>
+```
+
 ## Requirements
 - CMake
 - Make
