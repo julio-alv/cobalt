@@ -1,7 +1,5 @@
 #pragma once
-
 #include <glad/glad.h>
-
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <stb_image.h>
@@ -13,14 +11,16 @@
 #include <iostream>
 #include <set>
 #include <vector>
+
 #include <mesh.hpp>
 #include <shader.hpp>
 
 uint32_t generateTexture(const tinygltf::Image &image);
 
-struct Model {
+struct Model
+{
     // model data
-    std::unordered_map<int32_t, uint32_t> textures_loaded;  // stores all the textures loaded so far, optimization to make sure textures aren't loaded more than once.
+    std::unordered_map<int32_t, uint32_t> textures_loaded; // stores all the textures loaded so far, optimization to make sure textures aren't loaded more than once.
     std::vector<Mesh> meshes;
     // std::string directory;
 

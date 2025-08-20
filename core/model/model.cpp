@@ -2,18 +2,21 @@
 
 Model::Model(std::string const &path) { loadModel(path); }
 
-void Model::Draw(Shader &shader) {
+void Model::Draw(Shader &shader)
+{
     for (unsigned int i = 0; i < meshes.size(); i++)
         meshes[i].Draw(shader);
 }
 
-void Model::loadModel(std::string const &path) {
+void Model::loadModel(std::string const &path)
+{
     tinygltf::Model model;
     tinygltf::TinyGLTF loader;
     std::string err, warn;
 
     bool ret = loader.LoadASCIIFromFile(&model, &err, &warn, path);
-    if (!ret) {
+    if (!ret)
+    {
         throw std::runtime_error("Failed to load glTF: " + path + "\n" + err);
     }
 
@@ -21,7 +24,8 @@ void Model::loadModel(std::string const &path) {
         meshes.push_back(processMesh(model, mesh));
 }
 
-Mesh Model::processMesh(const tinygltf::Model &model, const tinygltf::Mesh &mesh) {
+Mesh Model::processMesh(const tinygltf::Model &model, const tinygltf::Mesh &mesh)
+{
     // data to fill
     std::vector<Vertex> vertices;
     std::vector<uint32_t> indices;
@@ -32,7 +36,8 @@ Mesh Model::processMesh(const tinygltf::Model &model, const tinygltf::Mesh &mesh
     const float *normals;
     const float *texs;
 
-    for (const auto &primitive : mesh.primitives) {
+    for (const auto &primitive : mesh.primitives)
+    {
         {
             const auto &accessor = model.accessors[primitive.attributes.at("POSITION")];
             const auto &view = model.bufferViews[accessor.bufferView];
@@ -64,30 +69,36 @@ Mesh Model::processMesh(const tinygltf::Model &model, const tinygltf::Mesh &mesh
                 stride = tinygltf::GetComponentSizeInBytes(accessor.componentType);
 
             indices.reserve(accessor.count);
-            for (size_t i = 0; i < accessor.count; i++) {
+            for (size_t i = 0; i < accessor.count; i++)
+            {
                 uint32_t index = 0;
-                switch (accessor.componentType) {
-                    case TINYGLTF_COMPONENT_TYPE_UNSIGNED_BYTE: {
-                        index = *(reinterpret_cast<const uint8_t *>(dataPtr + i * stride));
-                        break;
-                    }
-                    case TINYGLTF_COMPONENT_TYPE_UNSIGNED_SHORT: {
-                        index = *(reinterpret_cast<const uint16_t *>(dataPtr + i * stride));
-                        break;
-                    }
-                    case TINYGLTF_COMPONENT_TYPE_UNSIGNED_INT: {
-                        index = *(reinterpret_cast<const uint32_t *>(dataPtr + i * stride));
-                        break;
-                    }
-                    default:
-                        std::cerr << "Unsupported index type: " << accessor.componentType << std::endl;
-                        break;
+                switch (accessor.componentType)
+                {
+                case TINYGLTF_COMPONENT_TYPE_UNSIGNED_BYTE:
+                {
+                    index = *(reinterpret_cast<const uint8_t *>(dataPtr + i * stride));
+                    break;
+                }
+                case TINYGLTF_COMPONENT_TYPE_UNSIGNED_SHORT:
+                {
+                    index = *(reinterpret_cast<const uint16_t *>(dataPtr + i * stride));
+                    break;
+                }
+                case TINYGLTF_COMPONENT_TYPE_UNSIGNED_INT:
+                {
+                    index = *(reinterpret_cast<const uint32_t *>(dataPtr + i * stride));
+                    break;
+                }
+                default:
+                    std::cerr << "Unsupported index type: " << accessor.componentType << std::endl;
+                    break;
                 }
                 indices.push_back(index);
             }
         }
         {
-            if (model.textures.size() == 0) {
+            if (model.textures.size() == 0)
+            {
                 continue;
             }
             const auto &mat = model.materials[0];
@@ -111,24 +122,33 @@ Mesh Model::processMesh(const tinygltf::Model &model, const tinygltf::Mesh &mesh
             uint32_t spec;
             uint32_t norm;
 
-            if (!textures_loaded.contains(diffuse_id)) {
+            if (!textures_loaded.contains(diffuse_id))
+            {
                 diff = generateTexture(diffuse);
                 textures_loaded.insert({diffuse_id, diff});
-            } else {
+            }
+            else
+            {
                 diff = textures_loaded.at(diffuse_id);
             }
 
-            if (!textures_loaded.contains(specular_id)) {
+            if (!textures_loaded.contains(specular_id))
+            {
                 spec = generateTexture(specular);
                 textures_loaded.insert({specular_id, diff});
-            } else {
+            }
+            else
+            {
                 spec = textures_loaded.at(specular_id);
             }
 
-            if (!textures_loaded.contains(normal_id)) {
+            if (!textures_loaded.contains(normal_id))
+            {
                 norm = generateTexture(normal);
                 textures_loaded.insert({normal_id, diff});
-            } else {
+            }
+            else
+            {
                 norm = textures_loaded.at(normal_id);
             }
 
@@ -139,7 +159,8 @@ Mesh Model::processMesh(const tinygltf::Model &model, const tinygltf::Mesh &mesh
     }
 
     vertices.reserve(vertexCount);
-    for (size_t i = 0; i < vertexCount; i++) {
+    for (size_t i = 0; i < vertexCount; i++)
+    {
         Vertex v;
         v.Position.x = positions[i * 3 + 0];
         v.Position.y = positions[i * 3 + 1];
@@ -158,7 +179,8 @@ Mesh Model::processMesh(const tinygltf::Model &model, const tinygltf::Mesh &mesh
     return Mesh(vertices, indices, textures);
 }
 
-uint32_t generateTexture(const tinygltf::Image &image) {
+uint32_t generateTexture(const tinygltf::Image &image)
+{
     uint32_t id;
     glGenTextures(1, &id);
 

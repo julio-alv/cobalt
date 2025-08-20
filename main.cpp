@@ -22,7 +22,7 @@ bool firstMouse = true;
 bool wireframe = false;
 
 // timing
-float deltaTime = 0.0f;  // time between current frame and last frame
+float deltaTime = 0.0f; // time between current frame and last frame
 float lastFrame = 0.0f;
 
 float skyboxVertices[] = {
@@ -75,7 +75,8 @@ void mouse_callback(GLFWwindow *window, double xposIn, double yposIn);
 void scroll_callback(GLFWwindow *window, double xoffset, double yoffset);
 uint32_t loadCubemap(const std::vector<const char *> &faces);
 
-int main() {
+int main()
+{
     glfwInit();
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
@@ -86,7 +87,8 @@ int main() {
 #endif
 
     GLFWwindow *window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "LearnOpenGL", nullptr, nullptr);
-    if (window == nullptr) {
+    if (window == nullptr)
+    {
         std::printf("Failed to create GLFW window");
         glfwTerminate();
         return -1;
@@ -97,21 +99,22 @@ int main() {
     glfwSetCursorPosCallback(window, mouse_callback);
     glfwSetScrollCallback(window, scroll_callback);
 
-    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
+    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
+    {
         std::printf("Failed to initialize GLAD");
         return -1;
     }
 
-    Shader basic("../shaders/phong.vert", "../shaders/phong.frag");
-    Shader skyboxShader("../shaders/skybox.vert", "../shaders/skybox.frag");
+    Shader basic("../res/shaders/phong.vert", "../res/shaders/phong.frag");
+    Shader skyboxShader("../res/shaders/skybox.vert", "../res/shaders/skybox.frag");
 
     std::vector<const char *> faces{
-        "../textures/skybox/right.jpg",
-        "../textures/skybox/left.jpg",
-        "../textures/skybox/top.jpg",
-        "../textures/skybox/bottom.jpg",
-        "../textures/skybox/front.jpg",
-        "../textures/skybox/back.jpg"};
+        "../res/textures/skybox/right.jpg",
+        "../res/textures/skybox/left.jpg",
+        "../res/textures/skybox/top.jpg",
+        "../res/textures/skybox/bottom.jpg",
+        "../res/textures/skybox/front.jpg",
+        "../res/textures/skybox/back.jpg"};
     uint32_t cubemapTexture = loadCubemap(faces);
 
     // shader configuration
@@ -121,9 +124,9 @@ int main() {
     skyboxShader.use();
     skyboxShader.setInt("skybox", 0);
 
-    Model ourModel("../objects/backpack/backpack.gltf");
-    Model ourModel2("../objects/backpack/backpack.gltf");
-    Model ourModel3("../objects/backpack/backpack.gltf");
+    Model ourModel("../res/objects/backpack/backpack.gltf");
+    Model ourModel2("../res/objects/backpack/backpack.gltf");
+    Model ourModel3("../res/objects/backpack/backpack.gltf");
 
     // skybox VAO
     uint32_t skyboxVAO, skyboxVBO;
@@ -138,7 +141,8 @@ int main() {
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
 
-    while (!glfwWindowShouldClose(window)) {
+    while (!glfwWindowShouldClose(window))
+    {
         float currentFrame = static_cast<float>(glfwGetTime());
         deltaTime = currentFrame - lastFrame;
         lastFrame = currentFrame;
@@ -180,9 +184,9 @@ int main() {
         ourModel3.Draw(basic);
 
         // draw skybox as last
-        glDepthFunc(GL_LEQUAL);  // change depth function so depth test passes when values are equal to depth buffer's content
+        glDepthFunc(GL_LEQUAL); // change depth function so depth test passes when values are equal to depth buffer's content
         skyboxShader.use();
-        view = glm::mat4(glm::mat3(camera.GetViewMatrix()));  // remove translation from the view matrix
+        view = glm::mat4(glm::mat3(camera.GetViewMatrix())); // remove translation from the view matrix
         skyboxShader.setMat4("view", view);
         skyboxShader.setMat4("projection", projection);
         // skybox cube
@@ -191,7 +195,7 @@ int main() {
         glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture);
         glDrawArrays(GL_TRIANGLES, 0, 36);
         glBindVertexArray(0);
-        glDepthFunc(GL_LESS);  // set depth function back to default
+        glDepthFunc(GL_LESS); // set depth function back to default
 
         glfwSwapBuffers(window);
         glfwPollEvents();
@@ -201,15 +205,18 @@ int main() {
     return 0;
 }
 
-void framebuffer_size_callback(GLFWwindow *window, int32_t width, int32_t height) {
+void framebuffer_size_callback(GLFWwindow *window, int32_t width, int32_t height)
+{
     glViewport(0, 0, width, height);
 }
 
-void process_input(GLFWwindow *window) {
+void process_input(GLFWwindow *window)
+{
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
 
-    if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS) {
+    if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS)
+    {
         wireframe ? glPolygonMode(GL_FRONT_AND_BACK, GL_FILL)
                   : glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
         wireframe = !wireframe;
@@ -225,18 +232,20 @@ void process_input(GLFWwindow *window) {
         camera.ProcessKeyboard(RIGHT, deltaTime);
 }
 
-void mouse_callback(GLFWwindow *window, double xposIn, double yposIn) {
+void mouse_callback(GLFWwindow *window, double xposIn, double yposIn)
+{
     float xpos = static_cast<float>(xposIn);
     float ypos = static_cast<float>(yposIn);
 
-    if (firstMouse) {
+    if (firstMouse)
+    {
         lastX = xpos;
         lastY = ypos;
         firstMouse = false;
     }
 
     float xoffset = xpos - lastX;
-    float yoffset = lastY - ypos;  // reversed since y-coordinates go from bottom to top
+    float yoffset = lastY - ypos; // reversed since y-coordinates go from bottom to top
 
     lastX = xpos;
     lastY = ypos;
@@ -244,7 +253,8 @@ void mouse_callback(GLFWwindow *window, double xposIn, double yposIn) {
     camera.ProcessMouseMovement(xoffset, yoffset);
 }
 
-void scroll_callback(GLFWwindow *window, double xoffset, double yoffset) {
+void scroll_callback(GLFWwindow *window, double xoffset, double yoffset)
+{
     camera.ProcessMouseScroll(static_cast<float>(yoffset));
 }
 
@@ -257,18 +267,23 @@ void scroll_callback(GLFWwindow *window, double xoffset, double yoffset) {
 // +Z (front)
 // -Z (back)
 // -------------------------------------------------------
-uint32_t loadCubemap(const std::vector<const char *> &faces) {
+uint32_t loadCubemap(const std::vector<const char *> &faces)
+{
     uint32_t textureID;
     glGenTextures(1, &textureID);
     glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
 
     int width, height, nrChannels;
-    for (uint32_t i = 0; i < faces.size(); i++) {
+    for (uint32_t i = 0; i < faces.size(); i++)
+    {
         uint8_t *data = stbi_load(faces[i], &width, &height, &nrChannels, 0);
-        if (data) {
+        if (data)
+        {
             glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
             stbi_image_free(data);
-        } else {
+        }
+        else
+        {
             std::cout << "Cubemap texture failed to load at path: " << faces[i] << std::endl;
             stbi_image_free(data);
         }
