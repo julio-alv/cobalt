@@ -1,15 +1,19 @@
-add_library(core
-    window/window.hpp
-    window/window.cpp
+cmake_minimum_required(VERSION 3.16)
+project(core LANGUAGES CXX)
+
+file(GLOB_RECURSE SRC
+  "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp"
+  "${CMAKE_CURRENT_SOURCE_DIR}/*.h"
 )
 
-target_include_directories(core PUBLIC window/)
+add_library(core ${SRC})
 
-target_include_directories(core
-    PUBLIC
-        ${CMAKE_SOURCE_DIR}
-        ${CMAKE_SOURCE_DIR}/vendor/glad
-        ${CMAKE_SOURCE_DIR}/vendor/glfw
+target_include_directories(core 
+    INTERFACE
+        ${CMAKE_CURRENT_SOURCE_DIR}/indexbuffer
+        ${CMAKE_CURRENT_SOURCE_DIR}/vertexbuffer
+        ${CMAKE_CURRENT_SOURCE_DIR}/shader
+        ${CMAKE_CURRENT_SOURCE_DIR}/window
 )
 
 target_link_libraries(core

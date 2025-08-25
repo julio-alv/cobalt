@@ -1,6 +1,8 @@
-#include "window.hpp"
+#include <cassert>
 
-Window::Window(int32_t width, int32_t height, std::string_view name)
+#include "window.h"
+
+Window::Window(int width, int height, const std::string &name)
 {
     assert(glfwInit());
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
@@ -9,20 +11,21 @@ Window::Window(int32_t width, int32_t height, std::string_view name)
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 
-    m_Window = glfwCreateWindow(width, height, name.cbegin(), nullptr, nullptr);
-    assert(m_Window);
+    _window = glfwCreateWindow(width, height, name.c_str(), nullptr, nullptr);
+    assert(_window);
 
-    glfwMakeContextCurrent(m_Window);
+    glfwMakeContextCurrent(_window);
     assert(gladLoadGLLoader((GLADloadproc)glfwGetProcAddress));
 }
 
 Window::~Window()
 {
-    glfwDestroyWindow(m_Window);
+    glfwDestroyWindow(_window);
     glfwTerminate();
 }
 
-bool Window::ShouldClose() { return glfwWindowShouldClose(m_Window); }
-void Window::SwapBuffers() { glfwSwapBuffers(m_Window); }
+int Window::ShouldClose() { return glfwWindowShouldClose(_window); }
+void Window::SwapBuffers() { glfwSwapBuffers(_window); }
 void Window::PollEvents() { glfwPollEvents(); }
 void Window::WaitEvents() { glfwWaitEvents(); }
+void Window::SwapInterval(int i) { glfwSwapInterval(i); }

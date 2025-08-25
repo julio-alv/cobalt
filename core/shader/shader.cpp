@@ -1,0 +1,91 @@
+#include <glad/glad.h>
+#include <fstream>
+#include <iostream>
+#include <sstream>
+
+#include "shader.h"
+
+Shader::Shader(const std::string &vertPath, const std::string &fragPath)
+    : _id(0)
+{
+    std::stringstream vertBuff;
+    std::stringstream fragBuff;
+    vertBuff << std::ifstream(vertPath).rdbuf();
+    fragBuff << std::ifstream(fragPath).rdbuf();
+    auto vertStr = vertBuff.str();
+    auto fragStr = fragBuff.str();
+
+    createShader(vertStr, fragStr);
+}
+
+Shader::~Shader()
+{
+    glDeleteProgram(_id);
+}
+
+void Shader::Bind() const
+{
+    glUseProgram(_id);
+}
+
+void Shader::Unbind() const
+{
+    glUseProgram(0);
+}
+
+void Shader::SetUniform4f(const std::string &name, float f0, float f1, float f2, float f3)
+{
+    glUniform4f(getUniformLocation(name), f0, f1, f2, f3);
+}
+
+unsigned int Shader::getUniformLocation(const std::string &name)
+{
+    if (_cache.find(name) != _cache.end())
+        return _cache[name];
+
+    unsigned int location = glGetUniformLocation(_id, name.c_str());
+    _cache[name] = location;
+
+    return location;
+}
+
+void Shader::createShader(const std::string &vert, const std::string &frag)
+{
+    _id = glCreateProgram();
+
+    unsigned int vs = compileShader(vert, GL_VERTEX_SHADER);
+    unsigned int fs = compileShader(frag, GL_FRAGMENT_SHADER);
+
+    glAttachShader(_id, vs);
+    glAttachShader(_id, fs);
+    glLinkProgram(_id);
+    glValidateProgram(_id);
+
+    glDetachShader(_id, vs);
+    glDetachShader(_id, fs);
+    glDeleteShader(vs);
+    glDeleteShader(fs);
+}
+
+unsigned int Shader::compileShader(const std::string &source, unsigned int type)
+{
+    unsigned int id = glCreateShader(type);
+    auto *src = source.c_str();
+    glShaderSource(id, 1, &src, nullptr);
+    glCompileShader(id);
+
+    int result;
+    glGetShaderiv(id, GL_COMPILE_STATUS, &result);
+    if (!result)
+    {
+        int length;
+        glGetShaderiv(id, GL_INFO_LOG_LENGTH, &length);
+        auto message = static_cast<char *>(alloca(length * sizeof(char)));
+        glGetShaderInfoLog(id, length, &length, message);
+        std::printf("shader compilation failed!: %s\n", message);
+        glDeleteShader(id);
+        return 0;
+    }
+
+    return id;
+}

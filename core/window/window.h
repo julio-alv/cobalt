@@ -1,19 +1,20 @@
+#pragma once
+
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <string>
-#include <cassert>
 
 class Window
 {
-private:
-    GLFWwindow *m_Window;
+    GLFWwindow *_window;
 
 public:
-    explicit Window(int32_t width, int32_t height, std::string_view name);
+    explicit Window(int width, int height, const std::string &name);
     ~Window();
 
-    bool ShouldClose();
+    int ShouldClose();
     void SwapBuffers();
     void PollEvents();
     void WaitEvents();
+    void SwapInterval(int i);
 };

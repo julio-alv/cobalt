@@ -1,6 +1,6 @@
 # Cobalt
 
-A simple rendering engine, derived from the tutorials at learnopengl.com
+A simple rendering engine
 
 ## Cloning the repo
 
@@ -11,7 +11,7 @@ git clone --recurse-submodules <this repo>
 ```
 
 ## Requirements
-- CMake
+- CMake 4.0.3
 - Make
 - Clang++ (or any other compiler that supports c++23
 
@@ -22,6 +22,6 @@ git clone --recurse-submodules <this repo>
 - run `cmake ..` to generate build files
 - run `make` to build the project
 
-## running the project
+## Running the project
 
 After building the project, the executable `cobalt` will be available on the build folder.
