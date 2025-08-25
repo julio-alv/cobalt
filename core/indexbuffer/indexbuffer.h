@@ -1,16 +1,18 @@
 #pragma once
 
+#include <cstdint>
+
 class IndexBuffer
 {
-    unsigned int _id;
-    unsigned int _count;
+    std::uint32_t _id;
+    std::uint32_t _count;
 
 public:
-    explicit IndexBuffer(const unsigned int *data, unsigned int count, bool dynamic = false);
+    explicit IndexBuffer(const std::uint32_t *data, std::uint32_t count, bool dynamic = false);
     ~IndexBuffer();
 
     void Bind() const;
     void Unbind() const;
 
-    inline unsigned int GetCount();
+    inline std::uint32_t GetCount();
 };

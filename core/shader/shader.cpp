@@ -38,12 +38,12 @@ void Shader::SetUniform4f(const std::string &name, float f0, float f1, float f2,
     glUniform4f(getUniformLocation(name), f0, f1, f2, f3);
 }
 
-unsigned int Shader::getUniformLocation(const std::string &name)
+std::uint32_t Shader::getUniformLocation(const std::string &name)
 {
     if (_cache.find(name) != _cache.end())
         return _cache[name];
 
-    unsigned int location = glGetUniformLocation(_id, name.c_str());
+    std::uint32_t location = glGetUniformLocation(_id, name.c_str());
     _cache[name] = location;
 
     return location;
@@ -53,8 +53,8 @@ void Shader::createShader(const std::string &vert, const std::string &frag)
 {
     _id = glCreateProgram();
 
-    unsigned int vs = compileShader(vert, GL_VERTEX_SHADER);
-    unsigned int fs = compileShader(frag, GL_FRAGMENT_SHADER);
+    std::uint32_t vs = compileShader(vert, GL_VERTEX_SHADER);
+    std::uint32_t fs = compileShader(frag, GL_FRAGMENT_SHADER);
 
     glAttachShader(_id, vs);
     glAttachShader(_id, fs);
@@ -67,18 +67,18 @@ void Shader::createShader(const std::string &vert, const std::string &frag)
     glDeleteShader(fs);
 }
 
-unsigned int Shader::compileShader(const std::string &source, unsigned int type)
+std::uint32_t Shader::compileShader(const std::string &source, std::uint32_t type)
 {
-    unsigned int id = glCreateShader(type);
+    std::uint32_t id = glCreateShader(type);
     auto *src = source.c_str();
     glShaderSource(id, 1, &src, nullptr);
     glCompileShader(id);
 
-    int result;
+    std::int32_t result;
     glGetShaderiv(id, GL_COMPILE_STATUS, &result);
     if (!result)
     {
-        int length;
+        std::int32_t length;
         glGetShaderiv(id, GL_INFO_LOG_LENGTH, &length);
         auto message = static_cast<char *>(alloca(length * sizeof(char)));
         glGetShaderInfoLog(id, length, &length, message);

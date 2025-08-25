@@ -5,8 +5,8 @@
 
 class Shader
 {
-    unsigned int _id;
-    std::unordered_map<std::string, unsigned int> _cache;
+    std::uint32_t _id;
+    std::unordered_map<std::string, std::uint32_t> _cache;
 
 public:
     Shader(const std::string &vertPath, const std::string &fragPath);
@@ -18,7 +18,7 @@ public:
     void SetUniform4f(const std::string &name, float f0, float f1, float f2, float f3);
 
 private:
-    unsigned int getUniformLocation(const std::string &name);
+    std::uint32_t getUniformLocation(const std::string &name);
     void createShader(const std::string &vert, const std::string &frag);
-    unsigned int compileShader(const std::string &source, unsigned int type);
+    std::uint32_t compileShader(const std::string &source, std::uint32_t type);
 };

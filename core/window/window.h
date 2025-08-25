@@ -9,12 +9,12 @@ class Window
     GLFWwindow *_window;
 
 public:
-    explicit Window(int width, int height, const std::string &name);
+    explicit Window(std::int32_t width, std::int32_t height, const std::string &name);
     ~Window();
 
-    int ShouldClose();
+    std::int32_t ShouldClose();
     void SwapBuffers();
     void PollEvents();
     void WaitEvents();
-    void SwapInterval(int i);
+    void SwapInterval(std::int32_t i);
 };

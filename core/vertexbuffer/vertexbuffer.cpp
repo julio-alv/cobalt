@@ -2,7 +2,7 @@
 
 #include "vertexbuffer.h"
 
-VertexBuffer::VertexBuffer(const void *data, unsigned int size, bool dynamic)
+VertexBuffer::VertexBuffer(const void *data, std::uint32_t size, bool dynamic)
 {
     glGenBuffers(1, &_id);
     glBindBuffer(GL_ARRAY_BUFFER, _id);

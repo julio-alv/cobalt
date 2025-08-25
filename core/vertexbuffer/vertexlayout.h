@@ -5,11 +5,11 @@
 
 struct LayoutElement
 {
-    unsigned int type;
-    unsigned int count;
+    std::uint32_t type;
+    std::uint32_t count;
     unsigned char normalized;
 
-    static unsigned int GetSize(unsigned int type)
+    static std::uint32_t GetSize(std::uint32_t type)
     {
         switch (type)
         {
@@ -28,36 +28,36 @@ struct LayoutElement
 class VertexLayout
 {
     std::vector<LayoutElement> _elements;
-    unsigned int _stride;
+    std::uint32_t _stride;
 
 public:
     VertexLayout()
         : _stride(0) {}
 
     template <typename T>
-    void Push(unsigned int count) { static_assert(false); }
+    void Push(std::uint32_t count) { static_assert(false); }
 
     template <>
-    void Push<float>(unsigned int count)
+    void Push<float>(std::uint32_t count)
     {
         _elements.push_back({GL_FLOAT, count, GL_FALSE});
         _stride += count * LayoutElement::GetSize(GL_FLOAT);
     }
 
     template <>
-    void Push<unsigned int>(unsigned int count)
+    void Push<std::uint32_t>(std::uint32_t count)
     {
         _elements.push_back({GL_UNSIGNED_INT, count, GL_FALSE});
         _stride += count * LayoutElement::GetSize(GL_UNSIGNED_INT);
     }
 
     template <>
-    void Push<unsigned char>(unsigned int count)
+    void Push<unsigned char>(std::uint32_t count)
     {
         _elements.push_back({GL_UNSIGNED_BYTE, count, GL_TRUE});
         _stride += count * LayoutElement::GetSize(GL_UNSIGNED_BYTE);
     }
 
     inline const std::vector<LayoutElement> &GetElements() const { return _elements; }
-    inline unsigned int GetStride() const { return _stride; }
+    inline std::uint32_t GetStride() const { return _stride; }
 };

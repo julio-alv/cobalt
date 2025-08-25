@@ -5,7 +5,7 @@
 
 class VertexArray
 {
-    unsigned int _id;
+    std::uint32_t _id;
 
 public:
     VertexArray();

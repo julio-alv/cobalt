@@ -4,10 +4,10 @@
 
 class VertexBuffer
 {
-    unsigned int _id;
+    std::uint32_t _id;
 
 public:
-    explicit VertexBuffer(const void *data, unsigned int size, bool dynamic = false);
+    explicit VertexBuffer(const void *data, std::uint32_t size, bool dynamic = false);
     ~VertexBuffer();
 
     void Bind() const;

@@ -6,10 +6,10 @@
 #include "vertexbuffer.h"
 #include "vertexarray.h"
 
-constexpr int WIDTH = 1200;
-constexpr int HEIGHT = 900;
+constexpr std::int32_t WIDTH = 1200;
+constexpr std::int32_t HEIGHT = 900;
 
-int main()
+std::int32_t main()
 {
     Window win{WIDTH, HEIGHT, "Cobalt"};
     win.SwapInterval(1); // set the swap interval to the monitor's refresh rate
@@ -20,7 +20,7 @@ int main()
         0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 1.0f,
         -.5f, 0.5f, 1.0f, 1.0f, 0.0f, 1.0f};
 
-    unsigned int indices[]{
+    std::uint32_t indices[]{
         0, 1, 2,
         2, 3, 0};
 
