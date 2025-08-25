@@ -14,5 +14,5 @@ public:
     void Bind() const;
     void Unbind() const;
 
-    inline std::uint32_t GetCount();
+    inline std::uint32_t GetCount() const { return _count; }
 };

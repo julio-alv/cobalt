@@ -1,47 +1,47 @@
 #include <glad/glad.h>
 
 #include "window.h"
-#include "shader.h"
-#include "indexbuffer.h"
-#include "vertexbuffer.h"
-#include "vertexarray.h"
+#include "renderer.h"
+#include "texture.h"
 
 constexpr std::int32_t WIDTH = 1200;
 constexpr std::int32_t HEIGHT = 900;
 
-std::int32_t main()
+int main()
 {
     Window win{WIDTH, HEIGHT, "Cobalt"};
     win.SwapInterval(1); // set the swap interval to the monitor's refresh rate
 
     float vertices[] = {
-        -.5f, -.5f, 1.0f, 0.0f, 0.0f, 1.0f,
-        0.5f, -.5f, 0.0f, 1.0f, 0.0f, 1.0f,
-        0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 1.0f,
-        -.5f, 0.5f, 1.0f, 1.0f, 0.0f, 1.0f};
+        -.5f, -.5f, 0.0f, 0.0f,
+        0.5f, -.5f, 1.0f, 0.0f,
+        0.5f, 0.5f, 1.0f, 1.0f,
+        -.5f, 0.5f, 0.0f, 1.0f};
 
     std::uint32_t indices[]{
         0, 1, 2,
         2, 3, 0};
 
     VertexArray va;
-    VertexBuffer vbo{vertices, sizeof(vertices)};
+    VertexBuffer vb{vertices, sizeof(vertices)};
     VertexLayout layout;
     layout.Push<float>(2);
-    layout.Push<float>(4);
-    va.AddBuffer(vbo, layout);
-    IndexBuffer ibo{indices, 6};
+    layout.Push<float>(2);
+    va.AddBuffer(vb, layout);
+    IndexBuffer ib{indices, 6};
 
     Shader shader{"../res/shaders/basic.vert", "../res/shaders/basic.frag"};
 
+    Texture texture{"../res/textures/skybox/front.jpg"};
+    texture.Bind();
+    shader.SetUniform1i("u_Texture", 0);
+
+    Renderer renderer;
+
     while (!win.ShouldClose())
     {
-        glClear(GL_COLOR_BUFFER_BIT);
-
-        shader.Bind();
-        shader.SetUniform4f("u_Color", 0, 1, 0, 1);
-        va.Bind();
-        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
+        renderer.Clear();
+        renderer.Draw(va, ib, shader);
 
         win.SwapBuffers();
         win.PollEvents();

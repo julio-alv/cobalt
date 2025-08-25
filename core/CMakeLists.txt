@@ -9,15 +9,14 @@ file(GLOB_RECURSE SRC
 add_library(core ${SRC})
 
 target_include_directories(core 
-    INTERFACE
-        ${CMAKE_CURRENT_SOURCE_DIR}/indexbuffer
-        ${CMAKE_CURRENT_SOURCE_DIR}/vertexbuffer
-        ${CMAKE_CURRENT_SOURCE_DIR}/shader
+    PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}/window
+        ${CMAKE_CURRENT_SOURCE_DIR}/renderer
 )
 
 target_link_libraries(core
     PRIVATE
         glad
         glfw
+        stb
 )
