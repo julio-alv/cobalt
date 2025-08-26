@@ -38,5 +38,6 @@ target_link_libraries(core
     PRIVATE
         glad
         glfw
+        glm::glm
         stb
 )
