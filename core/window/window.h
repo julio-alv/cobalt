@@ -21,4 +21,5 @@ public:
     float GetDeltaTime();
     void SwapInterval(std::int32_t i);
     void SetResizeCallback(void (*callback)(GLFWwindow *window, std::int32_t width, std::int32_t height));
+    GLFWwindow *GetWindow() const;
 };

@@ -62,3 +62,8 @@ void Window::SetResizeCallback(void (*callback)(GLFWwindow *window, std::int32_t
 {
     glfwSetWindowSizeCallback(_window, callback);
 }
+
+GLFWwindow *Window::GetWindow() const
+{
+    return _window;
+}

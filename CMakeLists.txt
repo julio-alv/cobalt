@@ -11,6 +11,7 @@ add_subdirectory(vendor/glad)
 add_subdirectory(vendor/glm)
 add_subdirectory(vendor/stb_image)
 add_subdirectory(vendor/entt)
+add_subdirectory(vendor/imgui)
 add_subdirectory(core)
 
 add_executable(${PROJECT_NAME} main.cpp)
@@ -23,4 +24,5 @@ target_link_libraries(${PROJECT_NAME}
         stb
         EnTT
         core
+        imgui
 )
