@@ -2,7 +2,6 @@
 #include <glad/glad.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtx/euler_angles.hpp>
 #include <glm/gtc/quaternion.hpp>
 #include <glm/gtx/quaternion.hpp>
 
@@ -22,11 +21,11 @@ void resize(GLFWwindow *win, std::int32_t width, std::int32_t height)
     glViewport(0, 0, width, height);
 }
 
-glm::quat fromEulerYXZ(const glm::vec3 &eulerRadians)
+inline glm::quat fromEulerYXZ(const glm::vec3 &eulerAngles)
 {
-    glm::quat yaw = glm::angleAxis(eulerRadians.y, glm::vec3(0, 1, 0));
-    glm::quat pitch = glm::angleAxis(eulerRadians.x, glm::vec3(1, 0, 0));
-    glm::quat roll = glm::angleAxis(eulerRadians.z, glm::vec3(0, 0, 1));
+    glm::quat yaw = glm::angleAxis(glm::radians(eulerAngles.y), glm::vec3(0, 1, 0));
+    glm::quat pitch = glm::angleAxis(glm::radians(eulerAngles.x), glm::vec3(1, 0, 0));
+    glm::quat roll = glm::angleAxis(glm::radians(eulerAngles.z), glm::vec3(0, 0, 1));
 
     return yaw * pitch * roll;
 }
@@ -73,7 +72,6 @@ int main()
 
     ImGui::CreateContext();
     ImGuiIO &io = ImGui::GetIO();
-    (void)io;
     ImGui_ImplGlfw_InitForOpenGL(win.GetWindow(), true);
     ImGui_ImplOpenGL3_Init("#version 410");
 
@@ -91,7 +89,7 @@ int main()
             ImGui::Begin("Panel");
 
             ImGui::SliderFloat3("position", &position[0], -10.0f, 10.0f);
-            ImGui::SliderFloat3("rotation", &eulerAngles[0], -3.14f, 3.14f);
+            ImGui::SliderFloat3("rotation", &eulerAngles[0], -180.0f, 180.0f);
             ImGui::SliderFloat3("scale", &scale[0], -10.0f, 10.0f);
 
             ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
