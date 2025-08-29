@@ -2,6 +2,7 @@
 #include <glad/glad.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtx/euler_angles.hpp>
 #include <glm/gtc/quaternion.hpp>
 #include <glm/gtx/quaternion.hpp>
 
@@ -19,6 +20,15 @@ constexpr std::int32_t HEIGHT = 600;
 void resize(GLFWwindow *win, std::int32_t width, std::int32_t height)
 {
     glViewport(0, 0, width, height);
+}
+
+glm::quat fromEulerYXZ(const glm::vec3 &eulerRadians)
+{
+    glm::quat yaw = glm::angleAxis(eulerRadians.y, glm::vec3(0, 1, 0));
+    glm::quat pitch = glm::angleAxis(eulerRadians.x, glm::vec3(1, 0, 0));
+    glm::quat roll = glm::angleAxis(eulerRadians.z, glm::vec3(0, 0, 1));
+
+    return yaw * pitch * roll;
 }
 
 int main()
@@ -46,9 +56,10 @@ int main()
     IndexBuffer ib{indices, 6};
 
     glm::vec3 position = glm::vec3(0.0f, 0.0f, -2.0f);
+    glm::vec3 eulerAngles = glm::vec3(0.0f);
     glm::vec3 scale = glm::vec3(1.0f, 1.0f, 1.0f);
 
-    glm::mat4 view = glm::rotate(glm::mat4(1.0f), glm::radians(15.0f), glm::vec3(0, 1, 0));
+    glm::mat4 view = glm::mat4(1.0f);
     glm::mat4 projection = glm::perspective(glm::radians(90.0f), (float)WIDTH / (float)HEIGHT, 0.0f, -100.0f);
 
     Shader shader{"../res/shaders/basic.vert", "../res/shaders/basic.frag"};
@@ -80,7 +91,7 @@ int main()
             ImGui::Begin("Panel");
 
             ImGui::SliderFloat3("position", &position[0], -10.0f, 10.0f);
-            // ImGui::SliderFloat3("rotation", &rotation[0], -180.0f, 180.0f);
+            ImGui::SliderFloat3("rotation", &eulerAngles[0], -3.14f, 3.14f);
             ImGui::SliderFloat3("scale", &scale[0], -10.0f, 10.0f);
 
             ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
@@ -89,7 +100,8 @@ int main()
 
         float deltaTime = win.GetDeltaTime();
         renderer.Clear();
-        glm::mat4 model = glm::translate(glm::mat4(1.0f), position) * glm::scale(glm::mat4(1.0f), scale);
+        glm::quat orientation = fromEulerYXZ(eulerAngles);
+        glm::mat4 model = glm::translate(glm::mat4(1.0f), position) * glm::toMat4(orientation) * glm::scale(glm::mat4(1.0f), scale);
 
         shader.Bind();
         shader.SetUniformMat4f("u_Model", model);
