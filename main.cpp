@@ -37,14 +37,43 @@ int main()
     win.SetResizeCallback(resize);
 
     float vertices[] = {
-        -.5f, -.5f, -0.0f, 0.0f, 0.0f,
-        0.5f, -.5f, -0.0f, 1.0f, 0.0f,
-        0.5f, 0.5f, -0.0f, 1.0f, 1.0f,
-        -.5f, 0.5f, -0.0f, 0.0f, 1.0f};
+        -0.5f, -0.5f, 0.5f, 0.0f, 0.0f,
+        0.5f, -0.5f, 0.5f, 1.0f, 0.0f,
+        0.5f, 0.5f, 0.5f, 1.0f, 1.0f,
+        -0.5f, 0.5f, 0.5f, 0.0f, 1.0f,
 
-    std::uint32_t indices[]{
-        0, 1, 2,
-        2, 3, 0};
+        -0.5f, -0.5f, -0.5f, 1.0f, 0.0f,
+        0.5f, -0.5f, -0.5f, 0.0f, 0.0f,
+        0.5f, 0.5f, -0.5f, 0.0f, 1.0f,
+        -0.5f, 0.5f, -0.5f, 1.0f, 1.0f,
+
+        -0.5f, -0.5f, -0.5f, 0.0f, 0.0f,
+        -0.5f, -0.5f, 0.5f, 1.0f, 0.0f,
+        -0.5f, 0.5f, 0.5f, 1.0f, 1.0f,
+        -0.5f, 0.5f, -0.5f, 0.0f, 1.0f,
+
+        0.5f, -0.5f, -0.5f, 1.0f, 0.0f,
+        0.5f, -0.5f, 0.5f, 0.0f, 0.0f,
+        0.5f, 0.5f, 0.5f, 0.0f, 1.0f,
+        0.5f, 0.5f, -0.5f, 1.0f, 1.0f,
+
+        -0.5f, -0.5f, -0.5f, 0.0f, 1.0f,
+        0.5f, -0.5f, -0.5f, 1.0f, 1.0f,
+        0.5f, -0.5f, 0.5f, 1.0f, 0.0f,
+        -0.5f, -0.5f, 0.5f, 0.0f, 0.0f,
+
+        -0.5f, 0.5f, -0.5f, 0.0f, 0.0f,
+        0.5f, 0.5f, -0.5f, 1.0f, 0.0f,
+        0.5f, 0.5f, 0.5f, 1.0f, 1.0f,
+        -0.5f, 0.5f, 0.5f, 0.0f, 1.0f};
+
+    std::uint32_t indices[] = {
+        0, 1, 2, 2, 3, 0,
+        4, 5, 6, 6, 7, 4,
+        8, 9, 10, 10, 11, 8,
+        12, 13, 14, 14, 15, 12,
+        16, 17, 18, 18, 19, 16,
+        20, 21, 22, 22, 23, 20};
 
     VertexArray va;
     VertexBuffer vb{vertices, sizeof(vertices)};
@@ -52,14 +81,14 @@ int main()
     layout.Push<float>(3);
     layout.Push<float>(2);
     va.AddBuffer(vb, layout);
-    IndexBuffer ib{indices, 6};
+    IndexBuffer ib{indices, 36};
 
     glm::vec3 position = glm::vec3(0.0f, 0.0f, -2.0f);
     glm::vec3 eulerAngles = glm::vec3(0.0f);
     glm::vec3 scale = glm::vec3(1.0f, 1.0f, 1.0f);
 
     glm::mat4 view = glm::mat4(1.0f);
-    glm::mat4 projection = glm::perspective(glm::radians(90.0f), (float)WIDTH / (float)HEIGHT, 0.0f, -100.0f);
+    glm::mat4 projection = glm::perspective(glm::radians(90.0f), (float)WIDTH / (float)HEIGHT, 0.1f, -100.0f);
 
     Shader shader{"../res/shaders/basic.vert", "../res/shaders/basic.frag"};
 
@@ -68,7 +97,8 @@ int main()
     shader.SetUniform1i("u_Texture", 0);
 
     Renderer renderer;
-    // glEnable(GL_DEPTH_TEST);
+    glEnable(GL_DEPTH_TEST);
+    // glEnable(GL_CULL_FACE);
 
     ImGui::CreateContext();
     ImGuiIO &io = ImGui::GetIO();
@@ -80,6 +110,16 @@ int main()
     while (!win.ShouldClose())
     {
         win.PollEvents();
+
+        renderer.Clear();
+        glm::quat orientation = fromEulerYXZ(eulerAngles);
+        glm::mat4 model = glm::translate(glm::mat4(1.0f), position) * glm::toMat4(orientation) * glm::scale(glm::mat4(1.0f), scale);
+
+        shader.Bind();
+        shader.SetUniformMat4f("u_Model", model);
+        shader.SetUniformMat4f("u_View", view);
+        shader.SetUniformMat4f("u_Projection", projection);
+        renderer.Draw(va, ib, shader);
 
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
@@ -95,17 +135,6 @@ int main()
             ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
             ImGui::End();
         }
-
-        float deltaTime = win.GetDeltaTime();
-        renderer.Clear();
-        glm::quat orientation = fromEulerYXZ(eulerAngles);
-        glm::mat4 model = glm::translate(glm::mat4(1.0f), position) * glm::toMat4(orientation) * glm::scale(glm::mat4(1.0f), scale);
-
-        shader.Bind();
-        shader.SetUniformMat4f("u_Model", model);
-        shader.SetUniformMat4f("u_View", view);
-        shader.SetUniformMat4f("u_Projection", projection);
-        renderer.Draw(va, ib, shader);
 
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
