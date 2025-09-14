@@ -15,6 +15,7 @@ add_library(core
     vertexlayout/vertexlayout.cpp
     window/window.h
     window/window.cpp
+    components/transform.h
 )
 
 target_include_directories(core PUBLIC
@@ -26,12 +27,7 @@ target_include_directories(core PUBLIC
     vertexbuffer
     vertexlayout
     window
-)
-
-target_include_directories(core 
-    PUBLIC
-        ${CMAKE_CURRENT_SOURCE_DIR}/window
-        ${CMAKE_CURRENT_SOURCE_DIR}/renderer
+    components
 )
 
 target_link_libraries(core

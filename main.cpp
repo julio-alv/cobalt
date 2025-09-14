@@ -5,6 +5,11 @@
 #include <glm/gtc/quaternion.hpp>
 #include <glm/gtx/quaternion.hpp>
 
+#define TINYGLTF_IMPLEMENTATION
+#define STB_IMAGE_IMPLEMENTATION
+#define STB_IMAGE_WRITE_IMPLEMENTATION
+#include <tiny_gltf.h>
+
 #include <imgui.h>
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
@@ -12,6 +17,7 @@
 #include "window.h"
 #include "renderer.h"
 #include "texture.h"
+#include "transform.h"
 
 constexpr std::int32_t WIDTH = 800;
 constexpr std::int32_t HEIGHT = 600;
